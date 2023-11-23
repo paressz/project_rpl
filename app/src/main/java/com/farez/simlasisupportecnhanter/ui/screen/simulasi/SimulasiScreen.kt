@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -55,7 +57,7 @@ fun SimulasiScreen(
     if (showDialog) {
         SimulasiResultDialog(
             hasilSimulasi = "Sample Hasil",
-            id = R.drawable.plus_circle_svgrepo_com,
+            id = R.drawable.output_heal,
             showDialog = {
                 showDialog = it
             })
@@ -63,7 +65,9 @@ fun SimulasiScreen(
     Column (
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

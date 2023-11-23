@@ -12,18 +12,27 @@
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-11-22T13:08:47.583937700Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-11-23T02:01:05.423492600Z" />
     <multipleDevicesSelectedInDropDown value="true" />
-    <targetsSelectedWithDialog>
+    <runningDeviceTargetsSelectedWithDialog>
       <Target>
-        <type value="QUICK_BOOT_TARGET" />
+        <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\taloo\.android\avd\Pixel_5_API_28_pie.avd" />
+            <type value="SERIAL_NUMBER" />
+            <value value="gimzdqlj5xeqlbsg" />
           </Key>
         </deviceKey>
       </Target>
-    </targetsSelectedWithDialog>
+      <Target>
+        <type value="RUNNING_DEVICE_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\taloo\.android\avd\Pixel_3a_XL_API_31.avd" />
+          </Key>
+        </deviceKey>
+      </Target>
+    </runningDeviceTargetsSelectedWithDialog>
   </component>
 </project>

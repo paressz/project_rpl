@@ -34,7 +34,7 @@ fun HomeItem(
 ) {
     Card(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .padding(horizontal = 24.dp, vertical = 16.dp)
             .fillMaxWidth()
             .height(110.dp),
         colors = CardDefaults.cardColors(

@@ -1,6 +1,8 @@
 package com.farez.simlasisupportecnhanter.ui.screen.simulasi
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +41,7 @@ fun SimulasiResultDialog(
 ) {
     Dialog(onDismissRequest = { showDialog(false) }) {
         Surface(
-            color = Color.White,
+            color = MaterialTheme.colorScheme.primaryContainer,
             shape = RoundedCornerShape(24.dp),
             modifier = modifier
                 .width(250.dp)
@@ -55,9 +58,8 @@ fun SimulasiResultDialog(
                 Image(
                     painter = painterResource(id = id),
                     contentDescription = "Gambar $hasilSimulasi",
-                    modifier = Modifier.size(100.dp)
                 )
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 TiltNeonText(text = hasilSimulasi, 21.sp)
 
             }
@@ -75,20 +77,21 @@ private fun TiltNeonText(
         text = text,
         style = TextStyle(
             fontFamily = tiltNeon,
-            fontSize = fontSize
+            fontSize = fontSize,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         ),
         modifier = modifier
     )
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ResultPreview() {
     var showDialog by remember { mutableStateOf(true) }
     if (showDialog) {
         SimulasiResultDialog(
             hasilSimulasi = "Heal Kawan",
-            id = R.drawable.plus_circle_svgrepo_com,
+            id = R.drawable.output_heal,
             showDialog = {
                 showDialog = it
             }
