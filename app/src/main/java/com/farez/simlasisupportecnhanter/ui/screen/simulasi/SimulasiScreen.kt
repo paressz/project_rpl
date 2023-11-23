@@ -1,6 +1,7 @@
 package com.farez.simlasisupportecnhanter.ui.screen.simulasi
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -19,18 +21,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import com.farez.simlasisupportecnhanter.R
 import com.farez.simlasisupportecnhanter.ui.theme.BlueMain
 import com.farez.simlasisupportecnhanter.ui.theme.tiltNeon
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun preview() {
     SimulasiScreen()
@@ -45,10 +51,21 @@ fun SimulasiScreen(
     var enemyHp by remember { mutableStateOf("") }
     var selfHp by remember { mutableStateOf("") }
     var allyHp by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        SimulasiResultDialog(
+            hasilSimulasi = "Sample Hasil",
+            id = R.drawable.plus_circle_svgrepo_com,
+            showDialog = {
+                showDialog = it
+            })
+    }
     Column (
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomizedOutlinedTextField(
             value = selfHp,
@@ -66,12 +83,12 @@ fun SimulasiScreen(
             label = "HP Lawan"
         )
         Button(
-            modifier = modifier
+            modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BlueMain
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             ),
             onClick = {
                 if (selfHp.isEmpty() || allyHp.isEmpty() || enemyHp.isEmpty()) {
@@ -80,6 +97,8 @@ fun SimulasiScreen(
                 } else if (Integer.parseInt(selfHp) > 100 || Integer.parseInt(allyHp) > 100 || Integer.parseInt(enemyHp) > 100) {
                     Toast.makeText(context, "Nilai harus kurang dari 100", Toast.LENGTH_SHORT)
                         .show()
+                } else {
+                    showDialog = true
                 }
             },
         ) {
@@ -87,7 +106,8 @@ fun SimulasiScreen(
                 text = "Tampilkan Hasil",
                 style = TextStyle(
                     fontFamily = tiltNeon,
-                    fontSize = 16.sp
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
             )
         }
@@ -112,19 +132,24 @@ fun CustomizedOutlinedTextField(
             .fillMaxWidth()
             .height(68.dp),
         label = {
-            Text(
-                text = label,
-                style = TextStyle(
-                    fontFamily = tiltNeon,
-                    fontSize = 16.sp
-                )
-            )
+            TiltNeonText(text = label)
         },
         shape = RoundedCornerShape(8.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = BlueMain,
-            focusedLabelColor = BlueMain,
-            cursorColor = BlueMain
+    )
+}
+
+@Composable
+private fun TiltNeonText(
+    text : String,
+    modifier: Modifier = Modifier
+    ) {
+    Text(
+        text = text,
+        style = TextStyle(
+            fontFamily = tiltNeon,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
+        modifier = modifier
     )
 }
