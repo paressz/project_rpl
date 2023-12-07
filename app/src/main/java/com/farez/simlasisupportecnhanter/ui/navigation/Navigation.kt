@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.farez.simlasisupportecnhanter.ui.screen.home.HomeScreen
 import com.farez.simlasisupportecnhanter.ui.screen.keterangan.KeteranganScreen
+import com.farez.simlasisupportecnhanter.ui.screen.rules.RuleScreen
 import com.farez.simlasisupportecnhanter.ui.screen.simulasi.SimulasiScreen
 
 @Composable
@@ -27,7 +28,7 @@ fun SetupNavigation() {
             KeteranganScreen()
         }
         composable(Screen.Rule.route) {
-            Text(text = "IMPLEMENT LATER : RULE")
+            RuleScreen()
 
         }
     }
