@@ -58,6 +58,8 @@ fun SimulasiResultDialog(
                 Image(
                     painter = painterResource(id = id),
                     contentDescription = "Gambar $hasilSimulasi",
+                    modifier = Modifier
+                        .size(110.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TiltNeonText(text = hasilSimulasi, 21.sp)
@@ -91,7 +93,7 @@ private fun ResultPreview() {
     if (showDialog) {
         SimulasiResultDialog(
             hasilSimulasi = "Heal Kawan",
-            id = R.drawable.output_heal,
+            id = R.drawable.sword_duotone_svgrepo_com,
             showDialog = {
                 showDialog = it
             }

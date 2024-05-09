@@ -1,5 +1,6 @@
 package com.farez.simlasisupportecnhanter.fuzzy
 
+import android.util.Log
 import com.farez.simlasisupportecnhanter.data.model.SugenoData
 import java.text.DecimalFormat
 import kotlin.math.*
@@ -44,7 +45,14 @@ object FuzzyRule {
         }
         val df = DecimalFormat("#.##")
         val output = df.format(x/y).toDouble()
+        Log.d("OUTPUT SUGENO ANGKA", "getOutputAngka: $output")
         return output
+    }
+    fun getOutputKata(output : Double) : String {
+        var output = Math.round(output)
+        if(output <= 1) return "SERANG LAWAN"
+        else if (output >= 2 && output < 3) return "BANTU KAWAN"
+        else return "RECALL/MUNDUR"
     }
     fun rule1() : SugenoData {
         val memDiri = MembershipFunction.memMed(hpDiri)

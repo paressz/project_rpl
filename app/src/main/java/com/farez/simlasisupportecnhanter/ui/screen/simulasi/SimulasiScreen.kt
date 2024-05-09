@@ -1,5 +1,6 @@
 package com.farez.simlasisupportecnhanter.ui.screen.simulasi
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.farez.simlasisupportecnhanter.R
+import com.farez.simlasisupportecnhanter.fuzzy.FuzzyRule
 import com.farez.simlasisupportecnhanter.ui.theme.BlueMain
 import com.farez.simlasisupportecnhanter.ui.theme.tiltNeon
 
@@ -54,13 +56,17 @@ fun SimulasiScreen(
     var selfHp by remember { mutableStateOf("") }
     var allyHp by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
-    if (showDialog) {
+    var output by  remember { mutableStateOf(100.0) }
+    if(showDialog) {
         SimulasiResultDialog(
-            hasilSimulasi = "Sample Hasil",
-            id = R.drawable.output_heal,
-            showDialog = {
-                showDialog = it
-            })
+            hasilSimulasi = FuzzyRule.getOutputKata(output),
+            id =
+                if(output <= 1) R.drawable.sword_duotone_svgrepo_com
+                else if (output >= 2 && output < 3) R.drawable.muscle_svgrepo_com
+                else R.drawable.run_sports_runner_svgrepo_com
+        ) {
+            showDialog = it
+        }
     }
     Column (
         modifier = modifier
@@ -103,6 +109,10 @@ fun SimulasiScreen(
                         .show()
                 } else {
                     showDialog = true
+                    FuzzyRule.setHP(selfHp.toInt(), allyHp.toInt(), enemyHp.toInt())
+                    output = FuzzyRule.getOutputAngka()
+                    Log.d("OUTPUT KATA", "SimulasiScreen: ${FuzzyRule.getOutputKata(output)}")
+
                 }
             },
         ) {

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.farez.simlasisupportecnhanter.R
+import com.farez.simlasisupportecnhanter.data.model.RuleEnitity
 
 @Composable
 fun RuleScreen(modifier : Modifier = Modifier) {
@@ -44,17 +46,19 @@ fun RuleScreen(modifier : Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        item {
-            RuleItem(
-                title = "Rule 1",
-                content = "hp kawan : Low" +
-                        "\n" +
-                        "hp diri : low" +
-                        "\n" +
-                        "hp lawan : high" +
-                        "\n" +
-                        "output : recall"
-            )
+        RuleEnitity.getRuleEntities().forEachIndexed {index, ruleEnitity ->
+            item {
+                RuleItem(
+                    title = "Rule ${index + 1}",
+                    content = "hp kawan : ${ruleEnitity.hpKawan.name}".uppercase() +
+                            "\n" +
+                            "hp diri : ${ruleEnitity.hpDiri.name}".uppercase() +
+                            "\n" +
+                            "hp lawan : ${ruleEnitity.hpLawan.name}".uppercase() +
+                            "\n" +
+                            "output : ${ruleEnitity.output}".uppercase()
+                )
+            }
         }
     }
 }
@@ -69,7 +73,7 @@ fun RuleItem(title : String, content : String, modifier: Modifier = Modifier) {
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ),
         modifier = modifier
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .fillMaxWidth(),
         onClick = {isExpanded = !isExpanded}
     ) {

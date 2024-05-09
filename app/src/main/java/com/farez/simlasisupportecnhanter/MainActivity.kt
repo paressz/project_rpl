@@ -17,12 +17,14 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.core.view.WindowCompat
+import com.farez.simlasisupportecnhanter.data.model.RuleEnitity
 import com.farez.simlasisupportecnhanter.ui.navigation.SetupNavigation
 import com.farez.simlasisupportecnhanter.ui.theme.SimlasiSupportEcnhanterTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        RuleEnitity.fillRuleEntities()
         setContent {
             SimlasiSupportEcnhanterTheme {
                 // A surface container using the 'background' color from the theme
