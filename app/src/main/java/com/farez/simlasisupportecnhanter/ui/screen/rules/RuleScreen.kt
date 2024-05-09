@@ -47,7 +47,7 @@ fun RuleScreen(modifier : Modifier = Modifier) {
         item {
             RuleItem(
                 title = "Rule 1",
-                content = "hp kawa : Low" +
+                content = "hp kawan : Low" +
                         "\n" +
                         "hp diri : low" +
                         "\n" +
