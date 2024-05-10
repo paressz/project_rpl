@@ -24,7 +24,6 @@ import com.farez.simlasisupportecnhanter.ui.theme.SimlasiSupportEcnhanterTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        RuleEnitity.fillRuleEntities()
         setContent {
             SimlasiSupportEcnhanterTheme {
                 // A surface container using the 'background' color from the theme

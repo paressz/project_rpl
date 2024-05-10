@@ -27,14 +27,14 @@ object MembershipFunction {
 //    jika nilai hp < 35 atau hp > 65 maka mengembalikan 0
     fun memMed(hp : Int) : Double {
         val hp = hp.toDouble()
-        if(hp in 35.0..50.0) {
-            var alpre = (50 - hp)/(50-35)
+        if(hp in 33.0..50.0) {
+            var alpre = (50 - hp)/(50-33)
             val df = DecimalFormat("#.##")
             alpre = df.format(alpre).toDouble()
             return alpre
         }
-        else if(hp > 50 && hp <= 65) {
-            var alpre = (65 - hp)/(65-50)
+        else if(hp > 50 && hp <= 67) {
+            var alpre = (67 - hp)/(67-50)
             val df = DecimalFormat("#.##")
             alpre = df.format(alpre).toDouble()
             return alpre

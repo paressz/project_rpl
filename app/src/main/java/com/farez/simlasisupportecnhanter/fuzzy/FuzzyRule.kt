@@ -49,7 +49,6 @@ object FuzzyRule {
         return output
     }
     fun getOutputKata(output : Double) : String {
-        var output = Math.round(output)
         if(output <= 1) return "SERANG LAWAN"
         else if (output >= 2 && output < 3) return "BANTU KAWAN"
         else return "RECALL/MUNDUR"
