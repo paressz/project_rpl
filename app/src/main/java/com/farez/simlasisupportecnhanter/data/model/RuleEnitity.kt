@@ -7,8 +7,6 @@ data class RuleEnitity(val hpDiri : Indikator, val hpKawan : Indikator, val hpLa
             RuleEnitity(hpDiri = Indikator.MEDIUM, hpKawan = Indikator.HIGH, hpLawan = Indikator.LOW, output = "SERANG LAWAN"),
             RuleEnitity(hpDiri = Indikator.MEDIUM, hpKawan = Indikator.HIGH, hpLawan = Indikator.MEDIUM, output = "SERANG LAWAN"),
             RuleEnitity(hpDiri = Indikator.MEDIUM, hpKawan = Indikator.HIGH, hpLawan = Indikator.HIGH, output = "SERANG LAWAN"),
-            RuleEnitity(hpDiri = Indikator.MEDIUM, hpKawan = Indikator.HIGH, hpLawan = Indikator.HIGH, output = "SERANG LAWAN"),
-            RuleEnitity(hpDiri = Indikator.MEDIUM, hpKawan = Indikator.HIGH, hpLawan = Indikator.HIGH, output = "SERANG LAWAN"),
             RuleEnitity(hpDiri = Indikator.HIGH, hpKawan = Indikator.MEDIUM, hpLawan = Indikator.LOW, output = "SERANG LAWAN"),
             RuleEnitity(hpDiri = Indikator.HIGH, hpKawan = Indikator.MEDIUM, hpLawan = Indikator.MEDIUM, output = "SERANG LAWAN"),
             RuleEnitity(hpDiri = Indikator.HIGH, hpKawan = Indikator.HIGH, hpLawan = Indikator.LOW, output = "SERANG LAWAN"),
