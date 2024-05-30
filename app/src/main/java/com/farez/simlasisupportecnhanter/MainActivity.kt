@@ -82,7 +82,9 @@ private fun appPreview() {
                 }
                 composable(Screen.Rule.route) {
                     RuleScreen()
-                }        }
+                }
+            }
+        }
     }
 }
 
