@@ -17,8 +17,15 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.core.view.WindowCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.farez.simlasisupportecnhanter.data.model.RuleEnitity
-import com.farez.simlasisupportecnhanter.ui.navigation.SetupNavigation
+import com.farez.simlasisupportecnhanter.ui.navigation.Screen
+import com.farez.simlasisupportecnhanter.ui.screen.home.HomeScreen
+import com.farez.simlasisupportecnhanter.ui.screen.keterangan.KeteranganScreen
+import com.farez.simlasisupportecnhanter.ui.screen.rules.RuleScreen
+import com.farez.simlasisupportecnhanter.ui.screen.simulasi.SimulasiScreen
 import com.farez.simlasisupportecnhanter.ui.theme.SimlasiSupportEcnhanterTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,8 +38,22 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
-                    SetupNavigation()
+                    ) {
+                        val navController = rememberNavController()
+                        NavHost(navController = navController, startDestination = Screen.Home.route) {
+                            composable(Screen.Home.route) {
+                                HomeScreen(navController)
+                            }
+                            composable(Screen.Simulasi.route) {
+                                SimulasiScreen()
+                            }
+                            composable(Screen.Keterangan.route) {
+                                KeteranganScreen()
+                            }
+                            composable(Screen.Rule.route) {
+                                RuleScreen()
+                            }
+                        }
                 }
             }
         }
@@ -48,8 +69,20 @@ private fun appPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SetupNavigation()
-        }
+            var navController = rememberNavController()
+            NavHost(navController = navController, startDestination = Screen.Home.route) {
+                composable(Screen.Home.route) {
+                    HomeScreen(navController)
+                }
+                composable(Screen.Simulasi.route) {
+                    SimulasiScreen()
+                }
+                composable(Screen.Keterangan.route) {
+                    KeteranganScreen()
+                }
+                composable(Screen.Rule.route) {
+                    RuleScreen()
+                }        }
     }
 }
 
