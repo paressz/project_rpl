@@ -42,9 +42,13 @@ object FuzzyRule {
         data.forEach {
             x += (it.alphaPredikat * it.z)
             y += it.alphaPredikat
+            Log.d("alpre iterasi", "alpre: ${it.alphaPredikat}")
+            Log.d("z iterasi", "z: ${it.z}")
         }
         val df = DecimalFormat("#.##")
         val output = df.format(x/y).toDouble()
+        Log.d("total alpre", "total alpre: $x")
+        Log.d("total z", "total z: $y")
         Log.d("OUTPUT SUGENO ANGKA", "getOutputAngka: $output")
         return output
     }
@@ -78,6 +82,7 @@ object FuzzyRule {
         val memDiri = MembershipFunction.memMed(hpDiri)
         val memKawan = MembershipFunction.memHigh(hpKawan)
         val memLawan = MembershipFunction.memMed(hpLawan)
+        Log.d("TAGO", "rule1: $memLawan")
 
         var alpre = min(memDiri, memKawan)
         alpre = min(alpre, memLawan)
@@ -92,6 +97,7 @@ object FuzzyRule {
 
         var alpre = min(memDiri, memKawan)
         alpre = min(alpre, memLawan)
+
         val data = SugenoData(alphaPredikat = alpre, z = 1)
         return data
     }

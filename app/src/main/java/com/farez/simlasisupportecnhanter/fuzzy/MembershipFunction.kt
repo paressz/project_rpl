@@ -1,4 +1,5 @@
 package com.farez.simlasisupportecnhanter.fuzzy
+import android.util.Log
 import java.text.DecimalFormat
 
 object MembershipFunction {
@@ -31,6 +32,7 @@ object MembershipFunction {
             var alpre = (hp-33)/(50-33)
             val df = DecimalFormat("#.##")
             alpre = df.format(alpre).toDouble()
+            Log.d("TAG", "memMed: $alpre")
             return alpre
         }
         else if(hp > 50 && hp <= 67) {
@@ -52,6 +54,7 @@ object MembershipFunction {
             var alpre = (hp-65)/(100-65)
             val df = DecimalFormat("#.##")
             alpre = df.format(alpre).toDouble()
+            Log.d("TAG", "memHigh: $alpre")
             return alpre
         }
         else if (hp > 100) return 1.0
