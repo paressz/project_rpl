@@ -1,7 +1,22 @@
 package com.farez.simlasisupportecnhanter.ui.screen.simulasi
 
+import android.Manifest
+import android.app.Activity
+import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
+import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,11 +50,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.isDigitsOnly
 import com.farez.simlasisupportecnhanter.R
 import com.farez.simlasisupportecnhanter.fuzzy.FuzzyRule
 import com.farez.simlasisupportecnhanter.ui.theme.BlueMain
 import com.farez.simlasisupportecnhanter.ui.theme.tiltNeon
+import java.io.File
+import java.io.FileOutputStream
 
 @Preview(showBackground = true)
 @Composable
@@ -57,6 +78,16 @@ fun SimulasiScreen(
     var allyHp by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var output by  remember { mutableStateOf(100.0) }
+    var uri by remember { mutableStateOf<Uri?>(null) }
+    val activity = (context as Activity)
+    val createPdf = rememberLauncherForActivityResult(contract = ActivityResultContracts.CreateDocument("application/pdf")) { result ->
+        uri = result
+        generatePdf(context, output, uri.toString())
+        Log.d("URIR", "SimulasiScreen: ${result.toString()}")
+    }
+    if (!checkPermissions(context)) {
+        requestPermission(activity)
+    }
     if(showDialog) {
         SimulasiResultDialog(
             hasilSimulasi = FuzzyRule.getOutputKata(output),
@@ -77,21 +108,9 @@ fun SimulasiScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomizedOutlinedTextField(
-            value = selfHp,
-            onValueChanged = { input -> if (input.isDigitsOnly()) selfHp = input },
-            label = "HP Diri"
-        )
-        CustomizedOutlinedTextField(
-            value = allyHp,
-            onValueChanged = { input -> if (input.isDigitsOnly()) allyHp = input },
-            label = "HP Kawan"
-        )
-        CustomizedOutlinedTextField(
-            value = enemyHp,
-            onValueChanged = { input -> if (input.isDigitsOnly()) enemyHp = input },
-            label = "HP Lawan"
-        )
+        CustomizedOutlinedTextField(value = selfHp, onValueChanged = { input -> if (input.isDigitsOnly()) selfHp = input }, label = "HP Diri")
+        CustomizedOutlinedTextField(value = allyHp, onValueChanged = { input -> if (input.isDigitsOnly()) allyHp = input }, label = "HP Kawan")
+        CustomizedOutlinedTextField(value = enemyHp, onValueChanged = { input -> if (input.isDigitsOnly()) enemyHp = input }, label = "HP Lawan")
         Button(
             modifier = Modifier
                 .padding(16.dp)
@@ -112,22 +131,57 @@ fun SimulasiScreen(
                     FuzzyRule.setHP(selfHp.toInt(), allyHp.toInt(), enemyHp.toInt())
                     output = FuzzyRule.getOutputAngka()
                     Log.d("OUTPUT KATA", "SimulasiScreen: ${FuzzyRule.getOutputKata(output)}")
-
+                    createPdf.launch("HasilSimulasi.pdf")
+                    //generatePdf(context, output, uri)
                 }
             },
         ) {
-            Text(
-                text = "Tampilkan Hasil",
-                style = TextStyle(
-                    fontFamily = tiltNeon,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
+            Text(text = "Tampilkan Hasil", style = TextStyle(fontFamily = tiltNeon, fontSize = 18.sp, color = MaterialTheme.colorScheme.onPrimaryContainer,),
             )
         }
     }
 }
 
+fun generatePdf(context: Context, output : Double, uri : String) {
+    val hasilSimulasi = FuzzyRule.getOutputKata(output)
+    val idGambarHasil =
+        if(output <= 1) R.drawable.sword_duotone_svgrepo_com
+        else if (output >= 2 && output < 3) R.drawable.muscle_svgrepo_com
+        else R.drawable.run_sports_runner_svgrepo_com
+    val height = 595
+    val width = 842
+    val bmp = ContextCompat.getDrawable(context, idGambarHasil)!!.toBitmap()
+    val scaledBmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
+    val pdfDocument = PdfDocument()
+    val paint = Paint()
+    val text = Paint()
+    val pageInfo : PdfDocument.PageInfo? = PdfDocument.PageInfo
+        .Builder(width, height, 1)
+        .create()
+    val startPage = pdfDocument.startPage(pageInfo)
+    val canvas = startPage.canvas
+    paint.textAlign = Paint.Align.CENTER
+    canvas.drawBitmap(scaledBmp,  250f, 250f, paint)
+    text.apply {
+        typeface = (Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+        textSize = 21f
+        color = Color.Black.toArgb()
+        textAlign = Paint.Align.CENTER
+    }
+    canvas.drawText(hasilSimulasi, 396F, 560F, text)
+    pdfDocument.finishPage(startPage)
+    try {
+        val fileDescriptor = context.contentResolver.openFileDescriptor(Uri.parse(uri), "w")
+        fileDescriptor?.use {
+            pdfDocument.writeTo(FileOutputStream(it.fileDescriptor))
+            Toast.makeText(context, "PDF file generated successfully", Toast.LENGTH_SHORT).show()
+        }
+    } catch (e : Exception) {
+        Log.d("PDF GENERATE", "generatePdf: ${e.message}")
+        Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
+    }
+    pdfDocument.close()
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomizedOutlinedTextField(
@@ -152,6 +206,27 @@ fun CustomizedOutlinedTextField(
     )
 }
 
+private const val CREATE_FILE = 1
+fun checkPermissions(context: Context): Boolean {
+    var writeStoragePermission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+    var readStoragePermission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+    return writeStoragePermission == PackageManager.PERMISSION_GRANTED && readStoragePermission == PackageManager.PERMISSION_GRANTED
+}
+fun requestPermission(activity: Activity) {
+    ActivityCompat.requestPermissions(
+        activity,
+        arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ), 101
+    )
+}
 @Composable
 private fun TiltNeonText(
     text : String,
