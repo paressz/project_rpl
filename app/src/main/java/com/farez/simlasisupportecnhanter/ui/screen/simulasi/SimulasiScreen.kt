@@ -2,17 +2,13 @@ package com.farez.simlasisupportecnhanter.ui.screen.simulasi
 
 import android.Manifest
 import android.app.Activity
-import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -33,7 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,9 +50,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.isDigitsOnly
 import com.farez.simlasisupportecnhanter.R
 import com.farez.simlasisupportecnhanter.fuzzy.FuzzyRule
-import com.farez.simlasisupportecnhanter.ui.theme.BlueMain
 import com.farez.simlasisupportecnhanter.ui.theme.tiltNeon
-import java.io.File
 import java.io.FileOutputStream
 
 @Preview(showBackground = true)
@@ -78,15 +70,10 @@ fun SimulasiScreen(
     var allyHp by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var output by  remember { mutableStateOf(100.0) }
-    var uri by remember { mutableStateOf<Uri?>(null) }
-    val activity = (context as Activity)
     val createPdf = rememberLauncherForActivityResult(contract = ActivityResultContracts.CreateDocument("application/pdf")) { result ->
-        uri = result
-        generatePdf(context, output, uri.toString())
+        val uri = result.toString()
+        generatePdf(context, uri, selfHp, allyHp, enemyHp, output)
         Log.d("URIR", "SimulasiScreen: ${result.toString()}")
-    }
-    if (!checkPermissions(context)) {
-        requestPermission(activity)
     }
     if(showDialog) {
         SimulasiResultDialog(
@@ -94,7 +81,8 @@ fun SimulasiScreen(
             id =
                 if(output <= 1) R.drawable.sword_duotone_svgrepo_com
                 else if (output >= 2 && output < 3) R.drawable.muscle_svgrepo_com
-                else R.drawable.run_sports_runner_svgrepo_com
+                else R.drawable.run_sports_runner_svgrepo_com,
+            onLaporanClick = { createPdf.launch("HasilSimulasi.pdf") },
         ) {
             showDialog = it
         }
@@ -131,7 +119,6 @@ fun SimulasiScreen(
                     FuzzyRule.setHP(selfHp.toInt(), allyHp.toInt(), enemyHp.toInt())
                     output = FuzzyRule.getOutputAngka()
                     Log.d("OUTPUT KATA", "SimulasiScreen: ${FuzzyRule.getOutputKata(output)}")
-                    createPdf.launch("HasilSimulasi.pdf")
                     //generatePdf(context, output, uri)
                 }
             },
@@ -142,16 +129,21 @@ fun SimulasiScreen(
     }
 }
 
-fun generatePdf(context: Context, output : Double, uri : String) {
+fun generatePdf(context: Context, uri : String, self : String, ally : String, enemy : String, output : Double) {
     val hasilSimulasi = FuzzyRule.getOutputKata(output)
     val idGambarHasil =
         if(output <= 1) R.drawable.sword_duotone_svgrepo_com
         else if (output >= 2 && output < 3) R.drawable.muscle_svgrepo_com
         else R.drawable.run_sports_runner_svgrepo_com
-    val height = 595
-    val width = 842
+    //Menentukan tinggi dan lebar dari dokumen
+    val height = 450
+    val width = 360
+    /*
+    * convert drawable berupa svg menjadi bitmap
+    * kemudian diresize
+    * */
     val bmp = ContextCompat.getDrawable(context, idGambarHasil)!!.toBitmap()
-    val scaledBmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
+    val scaledBmp = Bitmap.createScaledBitmap(bmp, 135, 135, false)
     val pdfDocument = PdfDocument()
     val paint = Paint()
     val text = Paint()
@@ -159,23 +151,57 @@ fun generatePdf(context: Context, output : Double, uri : String) {
         .Builder(width, height, 1)
         .create()
     val startPage = pdfDocument.startPage(pageInfo)
-    val canvas = startPage.canvas
-    paint.textAlign = Paint.Align.CENTER
-    canvas.drawBitmap(scaledBmp,  250f, 250f, paint)
+    val c = startPage.canvas
     text.apply {
         typeface = (Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
-        textSize = 21f
+        textSize = 20f
         color = Color.Black.toArgb()
         textAlign = Paint.Align.CENTER
     }
-    canvas.drawText(hasilSimulasi, 396F, 560F, text)
+    // teks Jdudul
+    c.drawText("LAPORAN HASIL SIMULASI", 180f, 40f, text)
+    /*
+    * ubah alignment menjadi rata kiri dan
+    * menambahkan teks variabel input
+    * */
+    text.apply {
+        textAlign = Paint.Align.LEFT
+        textSize = 16f
+    }
+    c.drawText("Nilai HP Diri", 22f, 88f, text)
+    c.drawText("Nilai HP Kawan", 22f, 120f, text)
+    c.drawText("Nilai HP Lawan", 22f, 153f, text)
+    /*
+    * ganti alignment menjadi rata kanan dan
+    * menambahkan teks nilai dari variabel input
+    */
+    text.textAlign = Paint.Align.RIGHT
+    c.drawText(self, 338f, 88f, text)
+    c.drawText(ally, 338f, 120f, text)
+    c.drawText(enemy, 338f, 153f, text)
+    /*
+    * memasukkan teks dan gambar hasil simulasi
+    * kemudian finishPage dipanggil untuk
+    * memberitahu bahwa halaman telah selesai dibuat
+    */
+    text.textAlign = Paint.Align.CENTER
+    c.drawText("Aksi Kecerdasan Buatan", 180f, 215f, text)
+    c.drawBitmap(scaledBmp,  100f, 240f, paint)
+    c.drawText(hasilSimulasi, 180f, 418f, text)
     pdfDocument.finishPage(startPage)
+
+    /*
+    * Read file sesuai uri menggunakan ParcelFileDescriptor,
+    * kemudian write pdf yang dibuat ke dalam file tersebut.
+    * ParcelFileDescriptor digunakan untuk berinteraksi dengan suatu file
+    * dengan cara yang aman di sistem android
+    */
     try {
         val fileDescriptor = context.contentResolver.openFileDescriptor(Uri.parse(uri), "w")
-        fileDescriptor?.use {
-            pdfDocument.writeTo(FileOutputStream(it.fileDescriptor))
-            Toast.makeText(context, "PDF file generated successfully", Toast.LENGTH_SHORT).show()
-        }
+        fileDescriptor?.use { pdfDocument.writeTo(FileOutputStream(it.fileDescriptor)) }
+        fileDescriptor?.close()
+        Toast.makeText(context, "PDF file generated successfully", Toast.LENGTH_SHORT).show()
+
     } catch (e : Exception) {
         Log.d("PDF GENERATE", "generatePdf: ${e.message}")
         Toast.makeText(context, "Fail to generate PDF file..", Toast.LENGTH_SHORT).show()
@@ -206,27 +232,6 @@ fun CustomizedOutlinedTextField(
     )
 }
 
-private const val CREATE_FILE = 1
-fun checkPermissions(context: Context): Boolean {
-    var writeStoragePermission = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
-    var readStoragePermission = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    )
-    return writeStoragePermission == PackageManager.PERMISSION_GRANTED && readStoragePermission == PackageManager.PERMISSION_GRANTED
-}
-fun requestPermission(activity: Activity) {
-    ActivityCompat.requestPermissions(
-        activity,
-        arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ), 101
-    )
-}
 @Composable
 private fun TiltNeonText(
     text : String,

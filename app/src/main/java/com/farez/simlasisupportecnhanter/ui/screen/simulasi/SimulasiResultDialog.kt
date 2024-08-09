@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,15 +40,16 @@ fun SimulasiResultDialog(
     hasilSimulasi: String,
     modifier: Modifier = Modifier,
     id: Int,
-    showDialog: (Boolean) -> Unit
+    onLaporanClick : () -> Unit,
+    showDialog: (Boolean) -> Unit,
 ) {
     Dialog(onDismissRequest = { showDialog(false) }) {
         Surface(
             color = MaterialTheme.colorScheme.primaryContainer,
             shape = RoundedCornerShape(24.dp),
             modifier = modifier
-                .width(250.dp)
-                .height(250.dp),
+                .width(280.dp)
+                .height(280.dp),
         ) {
             Column(
                 modifier = Modifier
@@ -63,7 +67,15 @@ fun SimulasiResultDialog(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TiltNeonText(text = hasilSimulasi, 21.sp)
-
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    onClick = { onLaporanClick() }
+                ) {
+                    TiltNeonText(text = "BUAT LAPORAN", fontSize = 14.sp)
+                }
             }
         }
     }
@@ -94,6 +106,7 @@ private fun ResultPreview() {
         SimulasiResultDialog(
             hasilSimulasi = "Heal Kawan",
             id = R.drawable.sword_duotone_svgrepo_com,
+            onLaporanClick = {},
             showDialog = {
                 showDialog = it
             }
