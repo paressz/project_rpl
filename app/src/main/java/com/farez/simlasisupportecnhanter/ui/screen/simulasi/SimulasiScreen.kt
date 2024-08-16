@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import android.icu.text.SimpleDateFormat
+import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -48,6 +50,8 @@ import com.farez.simlasisupportecnhanter.R
 import com.farez.simlasisupportecnhanter.fuzzy.FuzzyRule
 import com.farez.simlasisupportecnhanter.ui.theme.tiltNeon
 import java.io.FileOutputStream
+import java.time.LocalDate
+import java.time.ZoneId
 
 @Preview(showBackground = true)
 @Composable
@@ -159,7 +163,7 @@ fun generatePdf(
     else if (output >= 2 && output < 3) R.drawable.muscle_svgrepo_com
     else R.drawable.run_sports_runner_svgrepo_com
     //Menentukan tinggi dan lebar dari dokumen
-    val height = 450
+    val height = 510
     val width = 360/*
     * convert drawable berupa svg menjadi bitmap
     * kemudian diresize
@@ -187,24 +191,36 @@ fun generatePdf(
         textAlign = Paint.Align.LEFT
         textSize = 16f
     }
-    c.drawText("Nilai HP Diri", 22f, 88f, text)
-    c.drawText("Nilai HP Kawan", 22f, 120f, text)
-    c.drawText("Nilai HP Lawan", 22f, 153f, text)/*
+    paint.strokeWidth = 2f
+    c.drawText("Variabel Input",30f, 86f, text)
+    c.drawLine(10f, 95f, 340f, 95f, paint)
+    c.drawText("HP Diri", 30f, 118f, text)
+    c.drawText("HP Kawan", 30f, 151f, text)
+    c.drawText("HP Lawan", 30f, 184f, text)
+    c.drawLine(10f, 195f, 340f, 195f, paint)
+    /*
     * ganti alignment menjadi rata kanan dan
     * menambahkan teks nilai dari variabel input
     */
-    text.textAlign = Paint.Align.RIGHT
-    c.drawText(self, 338f, 88f, text)
-    c.drawText(ally, 338f, 120f, text)
-    c.drawText(enemy, 338f, 153f, text)/*
+    text.textAlign = Paint.Align.CENTER
+    c.drawText("Nilai", 300f, 86f, text)
+    c.drawText(self, 300f, 118f, text)
+    c.drawText(ally, 300f, 151f, text)
+    c.drawText(enemy, 300f, 184f, text)/*
     * memasukkan teks dan gambar hasil simulasi
     * kemudian finishPage dipanggil untuk
     * memberitahu bahwa halaman telah selesai dibuat
     */
     text.textAlign = Paint.Align.CENTER
-    c.drawText("Aksi Kecerdasan Buatan", 180f, 215f, text)
-    c.drawBitmap(scaledBmp, 100f, 240f, paint)
-    c.drawText(hasilSimulasi, 180f, 418f, text)
+    c.drawText("Aksi Kecerdasan Buatan", 180f, 235f, text)
+    c.drawBitmap(scaledBmp, 110f, 260f, paint)
+    c.drawText(hasilSimulasi, 180f, 438f, text)
+    /*
+    * Untuk Teks Tanggal
+    */
+    text.textSize = 14f
+    val currDate = SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().time)
+    c.drawText(currDate.toString(), 310f, 475f, text)
     pdfDocument.finishPage(startPage)
 
     /*
