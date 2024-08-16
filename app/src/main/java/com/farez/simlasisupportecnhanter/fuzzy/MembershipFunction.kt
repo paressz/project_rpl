@@ -1,7 +1,10 @@
 package com.farez.simlasisupportecnhanter.fuzzy
 import android.util.Log
 import java.text.DecimalFormat
-
+/*
+* Nilai Maksimum dan Minimum dari setiap kategori
+* Membership Function ditentukan secara  manual
+* */
 object MembershipFunction {
 
 //    Mencari membership function untuk indikator low/rendah
